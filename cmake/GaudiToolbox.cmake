@@ -994,6 +994,10 @@ if os.path.exists(fname):
         # Runtime PATH with run
         _gaudi_runtime_prepend(path ${directory})
     elseif(type STREQUAL "CMAKE")
+        set(_LOCAL_INSTALL_CONFIGDIR ${GAUDI_INSTALL_CONFIGDIR})
+        if(NOT ${PROJECT_NAME} STREQUAL ${CMAKE_PROJECT_NAME})
+            set(_LOCAL_INSTALL_CONFIGDIR "lib/cmake/${PROJECT_NAME}")
+        endif()
         foreach(entity IN LISTS ARGN)
             if(NOT IS_ABSOLUTE ${entity})
                 set(entity "${CMAKE_CURRENT_SOURCE_DIR}/${entity}")
@@ -1003,10 +1007,10 @@ if os.path.exists(fname):
             endif()
             if(IS_DIRECTORY ${entity})
                 install(DIRECTORY "${entity}"
-                        DESTINATION "${GAUDI_INSTALL_CONFIGDIR}")
+                        DESTINATION "${_LOCAL_INSTALL_CONFIGDIR}")
             else()
                 install(FILES "${entity}"
-                        DESTINATION "${GAUDI_INSTALL_CONFIGDIR}")
+                        DESTINATION "${_LOCAL_INSTALL_CONFIGDIR}")
             endif()
         endforeach()
     else()
